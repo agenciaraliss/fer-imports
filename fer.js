@@ -132,7 +132,7 @@
     // subtítulos das seções
     safe('subtitulos', function () {
       Object.keys(SNAP.subs || {}).forEach(function (k) {
-        if (!/^js-/.test(k)) return;
+        if (!/^js-/.test(k) || k === 'js-banner-container') return;
         var c = q('.' + k); if (!c || q(':scope > .fx-sub2', c)) return;
         var t = q(':scope > h2, :scope > .h4, :scope > [class*="title"]', c);
         var p = d.createElement('p'); p.className = 'fx-sub2'; p.textContent = SNAP.subs[k];
