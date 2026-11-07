@@ -17,9 +17,12 @@
   /* ---------- CSS ---------- */
   (function () {
     var me = d.currentScript || qa('script[src*="/fer.js"],script[src*="/fer.min.js"]').pop();
-    if (me && me.src && /fer(\.min)?\.js(\?.*)?$/.test(me.src) && !q('link[data-fer-css]')) {
+    var ex = q('link[data-fer-css]') || qa('link[rel="stylesheet"]').filter(function (x) { return /\/fer(\.min)?\.css(\?.*)?$/.test(x.href); })[0];
+    var done = function () { w.__ferCssOk = 1; try { w.dispatchEvent(new Event('fer:css')); } catch (e) {} };
+    if (ex) { if (ex.sheet) done(); else ex.addEventListener('load', done); }
+    else if (me && me.src && /fer(\.min)?\.js(\?.*)?$/.test(me.src)) {
       var l = d.createElement('link'); l.rel = 'stylesheet'; l.setAttribute('data-fer-css', '1');
-      l.href = me.src.replace(/fer(\.min)?\.js(\?.*)?$/, 'fer.css$2'); d.head.appendChild(l);
+      l.onload = done; l.href = me.src.replace(/fer(\.min)?\.js(\?.*)?$/, 'fer.css$2'); d.head.appendChild(l);
     }
   })();
 
@@ -72,9 +75,15 @@
     var ds = q('form.fx-ds', dw);
     if (ds) ds.onsubmit = function (e) { e.preventDefault(); var v = q('input', ds).value.trim(); if (v) location.href = '/search/?q=' + encodeURIComponent(v); };
     if (sp) {
-      q('.fx-os', bar).onclick = function () { sp.classList.toggle('fx-open'); if (sp.classList.contains('fx-open')) setTimeout(function () { var i = q('input', sp); i && i.focus(); }, 60); };
-      var x = q('.fx-spx', sp); if (x) x.onclick = function () { sp.classList.remove('fx-open'); };
-      d.addEventListener('click', function (e) { if (sp.classList.contains('fx-open') && !sp.contains(e.target) && !e.target.closest('.fx-os')) sp.classList.remove('fx-open'); });
+      var spT = 0, osb = q('.fx-os', bar);
+      osb.onclick = function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var open = !sp.classList.contains('fx-open'); sp.classList.toggle('fx-open', open); spT = Date.now();
+        if (open) { var i = q('input', sp); if (i) { void sp.offsetWidth; try { i.focus({ preventScroll: true }); } catch (er) { i.focus(); } } }
+      };
+      var x = q('.fx-spx', sp); if (x) x.onclick = function (e) { e.stopPropagation(); sp.classList.remove('fx-open'); };
+      var inside = function (e) { var p = e.composedPath ? e.composedPath() : []; return p.indexOf(sp) > -1 || p.indexOf(osb) > -1 || sp.contains(e.target) || osb.contains(e.target); };
+      d.addEventListener('click', function (e) { if (!sp.classList.contains('fx-open') || Date.now() - spT < 500 || inside(e)) return; sp.classList.remove('fx-open'); });
     }
     var nativeCartBtn = q('[data-target="#modal-cart"]');
     q('.fx-cart', bar).onclick = function (e) { e.preventDefault(); if (nativeCartBtn) nativeCartBtn.click(); else location.href = '/comprar/'; };
@@ -144,14 +153,6 @@
       var s = q('.js-section-banner-home'); if (!s) return; s.classList.add('fx-o8');
       var c = q('.js-banner-container', s);
       if (c && !q('.fx-ctt', c)) { var t = tpl(SNAP.ctt); c.insertBefore(t, c.firstChild); var p = d.createElement('p'); p.className = 'fx-sub2'; p.textContent = SNAP.subs['js-banner-container'] || ''; t.after(p); }
-      // carrossel automático só no celular
-      var tm = null;
-      var run = function () {
-        clearInterval(tm); if (innerWidth > 767) return;
-        var sw = q('.swiper-container, .js-swiper-banners', s); if (!sw) return;
-        tm = setInterval(function () { if (sw.swiper) { sw.swiper.isEnd ? sw.swiper.slideTo(0) : sw.swiper.slideNext(); } }, 3500);
-      };
-      run(); w.addEventListener('resize', run);
     });
     // Scoop
     safe('scoop', function () {
@@ -194,6 +195,28 @@
       var fb = tpl(SNAP.fb3); pr.appendChild(fb);
       var lb = q('.fx-lb');
       qa('.fx-mqi', fb).forEach(function (f) { f.onclick = function () { if (lb) { q('img', lb).src = q('img', f).src; lb.classList.add('fx-open'); } }; });
+      qa('.fx-mq img', fb).forEach(function (i) { i.loading = 'eager'; i.decoding = 'async'; });
+      var mq = q('.fx-mq', fb), mqt = q('.fx-mqt', fb);
+      if (mq && mqt) {
+        var pos = 0, hold = 0, last = 0, on = false, raf = null;
+        var half = function () { var a = qa('.fx-mqi', mqt), n = a.length / 2; return n && a[n] ? a[n].offsetLeft - a[0].offsetLeft : 0; };
+        var stop = function () { hold = Date.now() + 2500; pos = mq.scrollLeft; };
+        ['touchstart', 'pointerdown', 'wheel'].forEach(function (ev) { mq.addEventListener(ev, stop, { passive: true }); });
+        mq.addEventListener('scroll', function () { if (Date.now() < hold) pos = mq.scrollLeft; }, { passive: true });
+        var tick = function (t) {
+          raf = null; if (!on) return;
+          var dt = last ? Math.min(t - last, 60) : 16; last = t;
+          if (Date.now() > hold) { var h = half(); pos += dt * 0.035; if (h && pos >= h) pos -= h; mq.scrollLeft = pos; }
+          else { var h2 = half(); if (h2 && mq.scrollLeft >= h2) { mq.scrollLeft -= h2; pos = mq.scrollLeft; } }
+          raf = requestAnimationFrame(tick);
+        };
+        var mode = function () {
+          var m = innerWidth <= 900; fb.classList.toggle('fx-mqm', m);
+          if (m && !on) { on = true; last = 0; pos = mq.scrollLeft; if (!raf) raf = requestAnimationFrame(tick); }
+          if (!m) on = false;
+        };
+        mode(); w.addEventListener('resize', mode);
+      }
     });
     // Quem Somos e Perguntas Frequentes (depois das marcas)
     safe('quemsomos-faq', function () {
@@ -383,6 +406,51 @@
     }
   }
 
+  /* ---------- celular: carrosséis, bolinhas, informativo ---------- */
+  function mobfix() {
+    var tune = function () {
+      var mob = innerWidth <= 767;
+      qa('.swiper-container').forEach(function (el) {
+        var s = el.swiper; if (!s || s.destroyed || el.closest('.js-item-product')) return;
+        var p = s.params, op = s.originalParams || {};
+        var prod = !!el.closest('[data-store^="home-products"],[data-store="related-products"],[data-store="complementary-products"],[data-store^="product-grid"],.template-404');
+        var cat = !!el.closest('[data-store="home-banner-categories"]');
+        if (prod && p.pagination && p.pagination.el && !p.pagination.dynamicBullets) {
+          p.pagination.dynamicBullets = true; p.pagination.dynamicMainBullets = 1;
+          try { s.pagination.destroy(); s.pagination.init(); s.pagination.render(); } catch (e) {}
+        }
+        if (mob && prod && p.spaceBetween !== 12) { p.spaceBetween = op.spaceBetween = 12; }
+        if (mob && cat && !el.__fxc) { el.__fxc = 1; p.spaceBetween = op.spaceBetween = 12; p.slidesPerView = op.slidesPerView = 1.6; p.centeredSlides = false; }
+        try { s.update(); s.pagination && s.pagination.update && s.pagination.update(); s.navigation && s.navigation.update && s.navigation.update(); } catch (e) {}
+      });
+    };
+    var t1; var soon = function () { clearTimeout(t1); t1 = setTimeout(tune, 80); };
+    tune(); w.addEventListener('fer:css', soon); w.addEventListener('load', soon); w.addEventListener('orientationchange', soon);
+    [600, 1500, 3000, 6000].forEach(function (ms) { setTimeout(tune, ms); });
+    // informativo no celular: passa sozinho e dá para arrastar
+    var ibc = q('.fx-ibc');
+    if (ibc && !ibc.__fx) {
+      ibc.__fx = 1; var holdI = 0;
+      ['touchstart', 'pointerdown', 'wheel'].forEach(function (ev) { ibc.addEventListener(ev, function () { holdI = Date.now() + 5000; }, { passive: true }); });
+      setInterval(function () {
+        if (innerWidth > 767 || Date.now() < holdI || ibc.scrollWidth <= ibc.clientWidth + 4) return;
+        var it = qa('.fx-ii', ibc), cur = ibc.scrollLeft, nx = null;
+        for (var i = 0; i < it.length; i++) { if (it[i].offsetLeft - it[0].offsetLeft > cur + 4) { nx = it[i]; break; } }
+        var to = nx && cur + ibc.clientWidth < ibc.scrollWidth - 4 ? nx.offsetLeft - it[0].offsetLeft : 0;
+        try { ibc.scrollTo({ left: to, behavior: 'smooth' }); } catch (e) { ibc.scrollLeft = to; }
+      }, 3500);
+    }
+    // app de vídeo (Widde) no canto sem conteúdo: área invisível não pode travar o toque
+    var corner = function () {
+      qa('[data-slot^="corner_"]').forEach(function (s) {
+        var f = q('iframe[src*="widde.io"]', s); var box = s.parentElement;
+        if (!f || !box) return;
+        box.classList.add('fx-wcorner');
+      });
+    };
+    corner(); setTimeout(corner, 2500); setTimeout(corner, 6000);
+  }
+
   /* ---------- início ---------- */
   function start() {
     safe('global', global);
@@ -395,6 +463,7 @@
     if (is('template-page')) safe('paginas', pages);
     safe('carrinho', cartDrawer);
     safe('popup', notif);
+    safe('celular', mobfix);
     iconPos(); if (d.fonts && d.fonts.ready) d.fonts.ready.then(iconPos);
     w.addEventListener('resize', iconSoon);
     new MutationObserver(function () { safe('popup', notif); iconSoon(); }).observe(d.body, { childList: true, subtree: true });

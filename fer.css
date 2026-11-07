@@ -608,8 +608,8 @@ h2[class*="js-products-"][class*="-title"],.fx-ctt,.fx-faq h2{margin-bottom:6px!
 [data-store="home-banner-categories"].fx-o9 .js-textbanner img{filter:grayscale(1) contrast(.92) brightness(1.06);transition:filter .7s ease}
 [data-store="home-banner-categories"].fx-o9 .js-banner-item:hover .js-textbanner img{filter:none}
 [data-store="home-banner-categories"].fx-o8 .swiper-container,[data-store="home-banner-categories"].fx-o9 .swiper-container{max-width:none!important;width:1268px!important;margin:0 auto!important}
-[data-store="home-banner-categories"].fx-o8 .swiper-wrapper,[data-store="home-banner-categories"].fx-o9 .swiper-wrapper{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:16px!important;transform:none!important}
-[data-store="home-banner-categories"].fx-o8 .js-banner-item,[data-store="home-banner-categories"].fx-o9 .js-banner-item{width:auto!important;margin:0!important}
+@media (min-width:768px){[data-store="home-banner-categories"].fx-o8 .swiper-wrapper,[data-store="home-banner-categories"].fx-o9 .swiper-wrapper{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:16px!important;transform:none!important}}
+@media (min-width:768px){[data-store="home-banner-categories"].fx-o8 .js-banner-item,[data-store="home-banner-categories"].fx-o9 .js-banner-item{width:auto!important;margin:0!important}}
 [data-store="home-banner-categories"].fx-o8 .js-textbanner,[data-store="home-banner-categories"].fx-o9 .js-textbanner{border-radius:18px!important}
 @media (max-width:767px){[data-store="home-banner-categories"].fx-o8 .swiper-container,[data-store="home-banner-categories"].fx-o9 .swiper-container{width:auto!important}[data-store="home-banner-categories"].fx-o8 .swiper-wrapper,[data-store="home-banner-categories"].fx-o9 .swiper-wrapper{display:flex!important;gap:0!important}}
 /* fx-d2 */
@@ -1218,3 +1218,44 @@ form[action*="winnie-pooh"] input[type=email]:focus{outline:none!important;box-s
 form.fx-nsending input[type=submit],form.fx-nsending button{opacity:.5;pointer-events:none}.fx-ft .fx-nmsg.fx-err{color:#F2B9A6}.fx-ft .fx-nmsg.fx-ok{color:#fff}
 /* ===================== AJUSTES DE TESTE ===================== */
 .fx-qs img.fx-qsmul{mix-blend-mode:multiply}
+
+/* ===================== CELULAR v2 ===================== */
+/* app de vídeo do canto sem conteúdo não trava o toque */
+.fx-wcorner,.fx-wcorner iframe{pointer-events:none!important}
+/* Quem Somos: recorte da foto igual ao computador */
+.fx-qs .fx-qsph .fx-qscut{mix-blend-mode:multiply!important}
+/* feedbacks no celular: rolagem nativa, sem camada gigante animada */
+.fx-fb3.fx-mqm .fx-mq{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+.fx-fb3.fx-mqm .fx-mq::-webkit-scrollbar{display:none}
+.fx-fb3.fx-mqm .fx-mqt{animation:none!important;transform:none!important}
+.fx-mqi{-webkit-backface-visibility:hidden;backface-visibility:hidden}
+@media (max-width:767px){
+/* informativo: arrasta e encaixa em cada item */
+.fx-ibc{scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.fx-ibc>.fx-ii{scroll-snap-align:start;scroll-snap-stop:always;flex:0 0 auto}
+/* banner principal: tracinho preto, igual ao resto do site */
+.js-home-mobile-slider .js-swiper-home-pagination-mobile{position:static!important;display:flex!important;justify-content:center;align-items:center;gap:7px;width:100%!important;margin:14px 0 0!important;transform:none!important}
+.js-home-mobile-slider .js-swiper-home-pagination-mobile .swiper-pagination-bullet{width:6px!important;height:6px!important;margin:0!important;border-radius:6px!important;background:#DDD6D1!important;opacity:1!important;border:0!important;box-shadow:none!important;transition:width .45s,background .45s}
+.js-home-mobile-slider .js-swiper-home-pagination-mobile .swiper-pagination-bullet-active{width:24px!important;background:#111!important}
+/* banners de categoria: carrossel com respiro entre eles */
+[data-store="home-banner-categories"] .js-swiper-banner-pagination{position:static!important;display:flex!important;justify-content:center;align-items:center;gap:7px;width:100%!important;margin:16px 0 0!important;transform:none!important}
+[data-store="home-banner-categories"] .js-swiper-banner-pagination .swiper-pagination-bullet{width:6px!important;height:6px!important;margin:0!important;border-radius:6px!important;background:#DDD6D1!important;opacity:1!important;border:0!important;box-shadow:none!important;transition:width .45s,background .45s}
+[data-store="home-banner-categories"] .js-swiper-banner-pagination .swiper-pagination-bullet-active{width:24px!important;background:#111!important}
+/* carrosséis de produtos: sem seta colada na tela, cards ocupam a largura */
+:is([data-store^="home-products"],[data-store="related-products"],[data-store="complementary-products"],.template-404) :is(.swiper-button-prev,.swiper-button-next):not(.js-item-product *){display:none!important}
+:is([data-store^="home-products"],[data-store="related-products"],[data-store="complementary-products"],.template-404) .swiper-container:not(.js-item-product *){margin-left:0!important;margin-right:0!important;width:auto!important;max-width:none!important}
+}
+/* botão "Avise-me quando chegar" (app) no formato dos botões do site */
+.js-item-product .CA_warnme_card_button{display:flex!important;align-items:center;justify-content:center;gap:8px;width:100%!important;min-height:48px!important;height:auto!important;margin:0!important;padding:8px 12px!important;border-radius:10px!important;background:#fff!important;color:#111!important;border:1px solid #111!important;box-shadow:none!important;font-family:inherit!important;font-size:11px!important;font-weight:500!important;line-height:1.25!important;letter-spacing:.16em!important;text-transform:uppercase!important;cursor:pointer;transition:background .3s,color .3s}
+.js-item-product .CA_warnme_card_button svg{width:15px!important;height:15px!important;flex:0 0 auto;stroke-width:1.6}
+.js-item-product .CA_warnme_card_button:hover{background:#111!important;color:#fff!important}
+@media (max-width:767px){.js-item-product .CA_warnme_card_button{min-height:48px!important;font-size:9.5px!important;letter-spacing:.08em!important;padding:6px 8px!important;gap:6px}
+.js-item-product .CA_warnme_card_button svg{width:13px!important;height:13px!important}}
+:is([data-store^="home-products"],[data-store="related-products"],[data-store="complementary-products"],.template-404) .swiper-pagination:not(.js-item-product *) .swiper-pagination-bullet{background:#DDD6D1!important;border:0!important;box-shadow:none!important;opacity:1!important}
+:is([data-store^="home-products"],[data-store="related-products"],[data-store="complementary-products"],.template-404) .swiper-pagination:not(.js-item-product *) .swiper-pagination-bullet-active{background:#111!important}
+.product-item-information:has(.CA_warnme_card_button)>.product-item-link{flex:1 1 auto}
+.product-item-link>div:has(.CA_warnme_card_button){margin-top:auto;padding-top:14px}
+/* busca: pergunta centralizada */
+.fx-sp .fx-pill{display:flex!important;width:max-content;max-width:calc(100% - 100px);margin:6px auto 0;justify-content:center}
+.fx-sp .fx-spx{top:14px!important}
+.fx-sp .fx-chips{justify-content:center}
