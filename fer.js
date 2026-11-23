@@ -228,8 +228,38 @@
       els.forEach(function (e, i) { e.classList.add('fx-an'); e.style.transitionDelay = (i * 0.09) + 's'; });
       var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { els.forEach(function (e) { e.classList.add('fx-in'); }); io.disconnect(); } }); }, { threshold: 0.2 });
       io.observe(qs);
+      cutout(q('.fx-qscut', qs));
       qa('.fx-fq', faq).forEach(function (it) { var bt = q('.fx-fqq', it); if (bt) bt.onclick = function () { var on = !it.classList.contains('fx-op'); qa('.fx-fq', faq).forEach(function (o) { o.classList.remove('fx-op'); }); it.classList.toggle('fx-op', on); }; });
     });
+  }
+
+  /* ---------- foto do Quem Somos: recorta o fundo branco (sem faixa no rosto) ---------- */
+  function cutout(img) {
+    if (!img || img.__cut) return; img.__cut = 1;
+    var im = new Image(); im.crossOrigin = 'anonymous';
+    im.onload = function () {
+      try {
+        var W = 900, H = Math.round(im.naturalHeight * W / im.naturalWidth);
+        var c = d.createElement('canvas'); c.width = W; c.height = H;
+        var x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(im, 0, 0, W, H);
+        var id = x.getImageData(0, 0, W, H), p = id.data, N = W * H, seen = new Uint8Array(N), st = new Int32Array(N), sp = 0;
+        var wh = function (i) { var o = i * 4, r = p[o], g = p[o + 1], b = p[o + 2], mn = Math.min(r, g, b), mx = Math.max(r, g, b); return mn > 228 && mx - mn < 22; };
+        var push = function (i) { if (!seen[i] && wh(i)) { seen[i] = 1; st[sp++] = i; } };
+        var X, Y, i;
+        for (X = 0; X < W; X++) { push(X); push((H - 1) * W + X); }
+        for (Y = 0; Y < H; Y++) { push(Y * W); push(Y * W + W - 1); }
+        while (sp) { i = st[--sp]; p[i * 4 + 3] = 0; X = i % W; if (X > 0) push(i - 1); if (X < W - 1) push(i + 1); if (i >= W) push(i - W); if (i < N - W) push(i + W); }
+        for (i = 0; i < N; i++) {
+          if (seen[i]) continue; X = i % W;
+          if ((X > 0 && seen[i - 1]) || (X < W - 1 && seen[i + 1]) || (i >= W && seen[i - W]) || (i < N - W && seen[i + W])) {
+            var o = i * 4, m = Math.min(p[o], p[o + 1], p[o + 2]); if (m > 190) p[o + 3] = Math.round(255 * (255 - m) / 65);
+          }
+        }
+        x.putImageData(id, 0, 0);
+        c.toBlob(function (bl) { if (!bl) return; img.src = URL.createObjectURL(bl); img.classList.add('fx-cutok'); }, 'image/png');
+      } catch (e) { /* sem permissão de leitura da imagem: fica como está */ }
+    };
+    im.src = img.currentSrc || img.src;
   }
 
   /* ---------- CATEGORIA e BUSCA ---------- */
