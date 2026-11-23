@@ -1275,3 +1275,7 @@ form.fx-nsending input[type=submit],form.fx-nsending button{opacity:.5;pointer-e
 .js-home-main-slider .js-swiper-home-pagination{left:0!important;right:0!important;top:auto!important;bottom:22px!important;width:100%!important;transform:none!important;flex-direction:row!important;justify-content:center!important;align-items:center!important;gap:7px!important;background:transparent!important;padding:0!important;height:auto!important}
 .js-home-main-slider .js-swiper-home-pagination .swiper-pagination-bullet{width:6px!important;height:6px!important;margin:0!important;border:0!important;border-radius:6px!important;background:rgba(255,255,255,.7)!important;opacity:1!important;box-shadow:0 1px 3px rgba(0,0,0,.25)!important;transition:width .45s!important}
 .js-home-main-slider .js-swiper-home-pagination .swiper-pagination-bullet-active{width:26px!important;height:6px!important;background:#fff!important}
+/* marcas: mesmo tamanho visual e efeito ao passar o mouse */
+[data-store="home-brands"].fx-brands .gallery-item-container,[data-store="home-brands"].fx-brands .swiper-slide{display:flex!important;align-items:center!important;justify-content:center!important;height:64px!important}
+[data-store="home-brands"].fx-brands img{object-fit:contain!important;opacity:.55!important;transition:opacity .35s,transform .35s cubic-bezier(.2,.7,.2,1)!important;transform:none}
+[data-store="home-brands"].fx-brands .swiper-slide:hover img{opacity:1!important;transform:translateY(-3px) scale(1.06)!important}
