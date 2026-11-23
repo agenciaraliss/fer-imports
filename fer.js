@@ -14,11 +14,20 @@
   var bc = d.body ? d.body.className : '';
   var is = function (t) { return d.body && d.body.classList.contains(t); };
 
+  /* ---------- só mostra a página quando o layout novo está pronto ---------- */
+  var shown = false;
+  function show(force) {
+    if (shown || (!force && !(w.__ferCssOk && w.__ferStart))) return; shown = true;
+    d.documentElement.classList.add('fx-ready');
+    if (d.body) d.body.style.setProperty('opacity', '1', 'important');
+  }
+  setTimeout(function () { show(true); }, 2500);
+
   /* ---------- CSS ---------- */
   (function () {
     var me = d.currentScript || qa('script[src*="/fer.js"],script[src*="/fer.min.js"]').pop();
     var ex = q('link[data-fer-css]') || qa('link[rel="stylesheet"]').filter(function (x) { return /\/fer(\.min)?\.css(\?.*)?$/.test(x.href); })[0];
-    var done = function () { w.__ferCssOk = 1; try { w.dispatchEvent(new Event('fer:css')); } catch (e) {} };
+    var done = function () { w.__ferCssOk = 1; try { w.dispatchEvent(new Event('fer:css')); } catch (e) {} show(); };
     if (ex) { if (ex.sheet) done(); else ex.addEventListener('load', done); }
     else if (me && me.src && /fer(\.min)?\.js(\?.*)?$/.test(me.src)) {
       var l = d.createElement('link'); l.rel = 'stylesheet'; l.setAttribute('data-fer-css', '1');
@@ -497,6 +506,7 @@
     iconPos(); if (d.fonts && d.fonts.ready) d.fonts.ready.then(iconPos);
     w.addEventListener('resize', iconSoon);
     new MutationObserver(function () { safe('popup', notif); iconSoon(); }).observe(d.body, { childList: true, subtree: true });
+    w.__ferStart = 1; show();
   }
   var tries = 0;
   function boot() {
