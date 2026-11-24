@@ -1320,3 +1320,6 @@ form.fx-nsending input[type=submit],form.fx-nsending button{opacity:.5;pointer-e
 .swiper-container:not(.swiper-container-initialized)>.swiper-wrapper>.js-item-product.swiper-slide{width:calc((100% - 48px)/4)!important;margin-right:16px!important;flex-shrink:0!important}
 .js-swiper-new.swiper-container:not(.swiper-container-initialized)>.swiper-wrapper>.js-item-product.swiper-slide{width:calc((100% - 64px)/5)!important}
 @media (max-width:767px){.swiper-container:not(.swiper-container-initialized)>.swiper-wrapper>.js-item-product.swiper-slide,.js-swiper-new.swiper-container:not(.swiper-container-initialized)>.swiper-wrapper>.js-item-product.swiper-slide{width:calc((100% - 16px)/2)!important}}
+
+/* trava: o bloco de selos nunca pode virar a página inteira */
+html.fx-trust,body.fx-trust,.js-product-detail.fx-trust{display:block!important}

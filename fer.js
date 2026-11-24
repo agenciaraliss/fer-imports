@@ -460,7 +460,7 @@ var n=0,auto=function(){var el=s.querySelector('.js-swiper-categories'),sw=el&&e
     if (form && (label || promo)) { var pb = d.createElement('div'); pb.className = 'fx-ppromo'; if (label) pb.appendChild(label); if (promo) pb.appendChild(promo); form.after(pb); }
     if (bcr) cols.before(bcr);
     var tr = qa('.font-weight-bold', root).find(function (x) { return /Compra protegida/.test(x.textContent); });
-    if (tr) { var p = tr; while (p && !/Trocas/.test(p.textContent)) p = p.parentElement; p && p.classList.add('fx-trust'); }
+    if (tr) { var p = tr; while (p && p !== root && p !== d.body && !/Trocas/.test(p.textContent)) p = p.parentElement; if (p && p !== root && p !== d.body && p !== d.documentElement && root.contains(p)) p.classList.add('fx-trust'); }
     // frete logo abaixo do comprar
     var shipC = q('[data-store="shipping-calculator"]', root), ship = shipC ? shipC.closest('.pb-4') : null;
     if (ship && form) {
