@@ -169,6 +169,8 @@
     var nativeNews = qa('footer form').find(function (f) { return f.querySelector('input[type=email],input[name=email]'); });
     var head = q('[data-store="head"]') || q('.js-head-main'); if (!head) return;
     var bar = tpl(SNAP.bar); head.appendChild(bar);
+    // barra de anúncio de aplicativo no celular: inteira no topo, some inteira ao rolar (nunca cortada ao meio)
+    safe('barra-app', function () { var h = q('header.js-head-main') || head, mq = w.matchMedia('(max-width:767px)'); var upd = function () { var a = h.firstElementChild, ah = (a && !a.className && !a.id) ? a.offsetHeight : 0; if (ah) { h.style.setProperty('--fx-top', ((w.pageYOffset || d.documentElement.scrollTop) > 4 ? -ah : 0) + 'px'); h.classList.add('fx-tp'); } else h.classList.remove('fx-tp'); }; w.addEventListener('scroll', upd, { passive: true }); w.addEventListener('resize', upd); setInterval(upd, 1200); upd(); });
     var tree = null; safe('menu-painel', function () { tree = navTree(); linkBar(bar, tree); });
     var sp = q('.fx-sp', bar);
     if (sp && nativeSearch) { var o = q('form.js-search-form', sp); if (o) o.replaceWith(nativeSearch); }
