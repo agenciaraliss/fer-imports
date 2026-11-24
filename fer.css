@@ -1315,3 +1315,8 @@ form.fx-nsending input[type=submit],form.fx-nsending button{opacity:.5;pointer-e
 [data-store="home-categories-featured"].fx-ar .home-category-image{height:128px!important;border-radius:14px!important}
 [data-store="home-categories-featured"].fx-ar .home-category>div:not(.home-category-image){font-size:10.5px!important;letter-spacing:.1em!important;margin-top:10px!important}
 }
+
+/* carrosséis de produto: tamanho certo antes de o carrossel iniciar (sem produto gigante ao carregar) */
+.swiper-container:not(.swiper-container-initialized)>.swiper-wrapper>.js-item-product.swiper-slide{width:calc((100% - 48px)/4)!important;margin-right:16px!important;flex-shrink:0!important}
+.js-swiper-new.swiper-container:not(.swiper-container-initialized)>.swiper-wrapper>.js-item-product.swiper-slide{width:calc((100% - 64px)/5)!important}
+@media (max-width:767px){.swiper-container:not(.swiper-container-initialized)>.swiper-wrapper>.js-item-product.swiper-slide,.js-swiper-new.swiper-container:not(.swiper-container-initialized)>.swiper-wrapper>.js-item-product.swiper-slide{width:calc((100% - 16px)/2)!important}}
