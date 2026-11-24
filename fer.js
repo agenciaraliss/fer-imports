@@ -257,6 +257,9 @@
   function home() {
     // informativo
     safe('informativo', function () { var bs = q('[data-store="banner-services"]'); if (bs && !q('.fx-ib', bs)) { var ibEl = tpl(SNAP.ib); safe('informativo-painel', function () { linkInfo(bs, ibEl); }); bs.insertBefore(ibEl, bs.firstChild); } });
+    // escolha por aroma (categorias em destaque do painel)
+    safe('aromas', function () { (function(){var d=document,w=window,s=d.querySelector('[data-store="home-categories-featured"]');if(!s||s.querySelector('.fx-art'))return;s.classList.add('fx-ar');var c=s.querySelector('.container')||s;var t=d.createElement('h2');t.className='fx-ctt fx-art';t.textContent='Escolha por aroma';var p=d.createElement('p');p.className='fx-sub2';p.textContent='Descubra a família olfativa que combina com você';c.insertBefore(p,c.firstChild);c.insertBefore(t,p);
+var n=0,auto=function(){var el=s.querySelector('.js-swiper-categories'),sw=el&&el.swiper;if(!sw||!sw.autoplay){if(n++<20)setTimeout(auto,400);return;}var mq=w.matchMedia('(max-width:767px)'),go=function(){try{if(mq.matches){sw.params.autoplay=sw.params.autoplay||{};sw.params.autoplay.enabled=true;sw.params.autoplay.delay=2200;sw.params.autoplay.disableOnInteraction=false;sw.params.speed=700;sw.update();sw.autoplay.start();}else{sw.autoplay.stop();sw.slideTo(0,0);}}catch(e){}};go();mq.addEventListener?mq.addEventListener('change',go):mq.addListener(go);};auto();})(); });
     // subtítulos das seções
     safe('subtitulos', function () {
       Object.keys(SNAP.subs || {}).forEach(function (k) {
